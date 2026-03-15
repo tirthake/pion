@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Public Post Office</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #1a1a1a;
+      --paper-main: #f4e4bc; /* Aged paper color */
+      --paper-lines: #d6c6a0;
+      --ink: #2b2b2b;
+      --accent: #8b0000; /* Dark Red for traditional feel */
+      --border: #333;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      background-image: radial-gradient(circle at 50% 50%, #2a2a2a 0%, #111 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    .font-display { font-family: 'Playfair Display', serif; }
+    .font-handwritten { font-family: 'Caveat', cursive; }
+    
+    /* Bengali Font Class */
+    .font-bangla { font-family: 'Hind Siliguri', 'Caveat', sans-serif; }
+
+    /* Traditional Letter Paper Style */
+    .letter-stationery {
+      background-color: var(--paper-main);
+      background-image: 
+        linear-gradient(90deg, transparent 0%, transparent 10%, rgba(139, 0, 0, 0.05) 10%, rgba(139, 0, 0, 0.05) 90%, transparent 90%);
+      color: var(--ink);
+      position: relative;
+      box-shadow: 
+        0 4px 6px rgba(0,0,0,0.3),
+        0 10px 20px rgba(0,0,0,0.2),
+        inset 0 0 80px rgba(139, 69, 19, 0.1);
+      border: 1px solid #d1c7a5;
+    }
+
+    /* The Red Ruled Lines */
+    .lined-paper {
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 31px,
+        #d1c7a5 31px,
+        #d1c7a5 32px
+      );
+      background-position: 0 24px; /* Offset for first line */
+    }
+
+    /* Decorative Border */
+    .ornate-border {
+      border: 4px double #8b4513;
+      outline: 1px solid #8b4513;
+      outline-offset: 4px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
+    .animate-scale-in { animation: scaleIn 0.4s ease-out forwards; }
+
+    /* Inputs on Paper */
+    .paper-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px dashed rgba(139, 69, 19, 0.3);
+      color: var(--ink);
+      transition: all 0.3s;
+    }
+
+    .paper-input:focus {
+      outline: none;
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .paper-input::placeholder {
+      color: rgba(43, 43, 43, 0.4);
+      font-style: italic;
+    }
+
+    /* Wax Seal Button */
+    .wax-seal-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #c0392b, #8b0000);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset -2px -2px 4px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: none;
+      color: #f4e4bc;
+      font-weight: bold;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .wax-seal-btn:hover {
+      transform: scale(1.1) rotate(-5deg);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+  </style>
+</head>
+<body class="overflow-x-hidden">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-[#111]/90 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" onclick="showHome()" class="flex items-center gap-3">
+        <svg class="w-8 h-8 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="3 9 12 17 21 9"/>
+        </svg>
+        <span class="font-display text-xl text-white">Public Post Office</span>
+      </a>
+      
+      <button onclick="openWriteModal()" class="flex items-center gap-2 bg-amber-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-amber-700 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        Write a Letter
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="relative z-10 pt-32 pb-20 px-6">
+    
+    <!-- Hero Section -->
+    <section id="home-section" class="max-w-4xl mx-auto text-center">
+      <div class="animate-fade-in">
+        <h1 class="font-display text-5xl md:text-7xl text-white mb-6">
+          Send a Letter,<br>
+          <span class="text-amber-500">Leave a Memory.</span>
+        </h1>
+        
+        <p class="text-lg text-gray-400 max-w-xl mx-auto mb-12">
+          Write letters to anyone. Search for your name to find messages. <br>Supports English & Bangla.
+        </p>
+
+        <!-- Search Area -->
+        <div class="max-w-lg mx-auto relative mb-16">
+          <div class="relative bg-slate-900/80 border border-slate-700 rounded-2xl p-3 flex gap-3">
+            <input 
+              type="text" 
+              id="search-input" 
+              class="flex-1 bg-transparent px-4 py-3 text-white placeholder-slate-500 focus:outline-none text-lg"
+              placeholder="Search for your name..."
+              onkeypress="if(event.key === 'Enter') searchLetters()"
+            >
+            <button onclick="searchLetters()" class="bg-white text-slate-900 px-8 py-3 rounded-xl font-semibold hover:bg-slate-100 transition-colors">
+              Find
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Letters Grid -->
+      <div class="mt-12">
+        <p class="text-sm font-medium text-slate-500 mb-8 tracking-wider uppercase">Letters currently in the box</p>
+        <div id="recent-letters" class="flex flex-wrap justify-center gap-8">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Search Results Section -->
+    <section id="search-results-section" class="hidden max-w-4xl mx-auto">
+      <button onclick="showHome()" class="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back
+      </button>
+      
+      <div class="mb-12">
+        <h2 class="font-display text-4xl text-white mb-2">Letters for <span id="search-name" class="text-amber-400"></span></h2>
+        <p id="search-count" class="text-gray-400"></p>
+      </div>
+      
+      <div id="letters-container" class="space-y-8">
+        <!-- Letters go here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Write Modal (Traditional Design) -->
+  <div id="write-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" onclick="closeWriteModal()"></div>
+    
+    <div class="relative min-h-screen md:flex md:items-center md:justify-center p-4">
+      <div class="letter-stationery ornate-border w-full max-w-2xl mx-auto md:my-12 rounded-sm animate-scale-in relative">
+        
+        <!-- Top Decorative Bar -->
+        <div class="h-2 bg-gradient-to-r from-amber-700 via-amber-500 to-amber-700"></div>
+        
+        <div class="p-8 md:p-12">
+          
+          <!-- Header: Stamp & Date -->
+          <div class="flex justify-between items-start mb-8 border-b-2 border-double border-amber-800/30 pb-4">
+            <div class="text-left">
+              <p class="text-xs font-bold uppercase tracking-widest text-amber-800">From:</p>
+              <input type="text" id="sender" class="paper-input w-full text-xl font-display mt-1" placeholder="Your Name">
+            </div>
+            
+            <div class="text-right">
+              <!-- Stamp Area -->
+              <div class="w-20 h-24 border-2 border-dashed border-amber-800/50 flex flex-col items-center justify-center text-amber-800/60 p-1 bg-white/50">
+                <span class="text-xs font-bold">STAMP</span>
+                <svg class="w-8 h-8 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- To Field -->
+          <div class="mb-6">
+            <p class="text-xs font-bold uppercase tracking-widest text-amber-800">To:</p>
+            <input type="text" id="recipient" required class="paper-input w-full text-3xl font-display mt-1" placeholder="Recipient's Name">
+          </div>
+
+          <!-- Letter Content -->
+          <div class="lined-paper min-h-[300px] py-2 mb-6">
+            <textarea 
+              id="content" 
+              required rows="8" 
+              class="w-full bg-transparent border-none focus:outline-none font-bangla text-2xl leading-8 text-ink placeholder-amber-900/30 resize-none"
+              placeholder="Write your letter here... (Bangla or English)"
+            ></textarea>
+          </div>
+
+          <!-- Spotify Section -->
+          <div class="mt-6 pt-4 border-t border-amber-800/20 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-600">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02z"/></svg>
+            </div>
+            <input type="text" id="spotify-link" class="flex-1 bg-transparent border-b border-amber-800/20 focus:outline-none focus:border-amber-800 text-sm font-bangla" placeholder="Paste Spotify Song Link (Optional)">
+          </div>
+
+          <!-- Submit Button (Wax Seal) -->
+          <div class="flex justify-end mt-8">
+            <button type="button" onclick="submitLetter()" class="wax-seal-btn">
+              SEND
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Read Modal -->
+  <div id="read-modal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" onclick="closeReadModal()"></div>
+    
+    <div class="relative min-h-screen md:flex md:items-center md:justify-center p-4">
+      <div id="letter-content" class="letter-stationery ornate-border w-full max-w-2xl mx-auto md:my-12 rounded-sm animate-scale-in relative">
+        <!-- Content inserted by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-amber-600 text-white px-6 py-3 rounded-full shadow-lg opacity-0 transition-all duration-500 transform translate-y-4 pointer-events-none z-50">
+    Letter Sent!
+  </div>
+
+  <script>
+    // --- DATABASE CONFIGURATION ---
+    const DB_KEY = 'publicPostOfficeDB';
+    let letters = [];
+
+    // --- BACKEND LOGIC ---
+
+    function loadData() {
+      const stored = localStorage.getItem(DB_KEY);
+      if (stored) {
+        letters = JSON.parse(stored);
+      } else {
+        // Initial Sample Letter
+        letters = [
+          {
+            id: 1,
+            recipient: 'Rahim',
+            sender: 'Karim',
+            content: 'প্রিয় রাহিম,\n\nতোমার জন্য এই চিঠি। আশা করি ভালো আছ। এই গানটি তোমার জন্য।\n\nLove,\nKarim',
+            timestamp: Date.now() - 4000000,
+            spotifyUrl: 'https://open.spotify.com/track/0gplL1WMoEB6dQdBQvFDnE?si=ad50a0f5f23b40a5',
+            flowers: []
+          }
+        ];
+        saveData();
+      }
+      updateUI();
+    }
+
+    function saveData() {
+      localStorage.setItem(DB_KEY, JSON.stringify(letters));
+      updateUI();
+    }
+
+    function updateUI() {
+      renderRecentLetters();
+    }
+
+    // --- RENDERING ---
+
+    function renderRecentLetters() {
+      const container = document.getElementById('recent-letters');
+      
+      if(letters.length === 0) {
+        container.innerHTML = '<div class="text-gray-500 py-10 col-span-full text-center">No letters yet. Write the first one.</div>';
+        return;
+      }
+
+      // Sort by newest first
+      const recent = [...letters].sort((a, b) => b.timestamp - a.timestamp);
+      
+      container.innerHTML = recent.map(l => `
+        <div onclick="viewLetter(${l.id})" class="cursor-pointer w-full md:w-80 bg-gray-800/50 border border-gray-700 rounded-lg overflow-hidden hover:border-amber-500 transition-all group">
+          <div class="h-2 bg-amber-700"></div>
+          <div class="p-5 text-left">
+            <div class="flex justify-between items-start mb-3">
+              <p class="text-xs font-bold uppercase tracking-wider text-amber-400">To: ${l.recipient}</p>
+              ${l.spotifyUrl ? '<span class="text-green-500"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0z"/></svg></span>' : ''}
+            </div>
+            <p class="font-bangla text-gray-300 line-clamp-3 text-sm mb-3">${l.content}</p>
+            <div class="flex justify-between items-center pt-3 border-t border-gray-700">
+              <p class="text-gray-500 text-xs">From: ${l.sender}</p>
+              <span class="text-amber-500 text-xs opacity-0 group-hover:opacity-100 transition-opacity">Read &rarr;</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // --- ACTIONS ---
+
+    function submitLetter() {
+      const recipient = document.getElementById('recipient').value.trim();
+      const sender = document.getElementById('sender').value.trim() || 'Anonymous';
+      const content = document.getElementById('content').value.trim();
+      const spotifyUrl = document.getElementById('spotify-link').value.trim();
+
+      if (!recipient || !content) {
+        alert("Please write both a recipient and a message.");
+        return;
+      }
+
+      const newLetter = {
+        id: Date.now(),
+        recipient,
+        sender,
+        content,
+        timestamp: Date.now(),
+        spotifyUrl,
+        flowers: []
+      };
+
+      letters.push(newLetter);
+      saveData();
+      
+      closeWriteModal();
+      showToast('Letter sent successfully!');
+
+      // Automatically show the result
+      setTimeout(() => {
+        document.getElementById('search-input').value = recipient;
+        searchLetters();
+      }, 300);
+    }
+
+    function searchLetters() {
+      const query = document.getElementById('search-input').value.trim().toLowerCase();
+      if (!query) return;
+      
+      const results = letters.filter(l => l.recipient.toLowerCase().includes(query));
+      
+      document.getElementById('home-section').classList.add('hidden');
+      document.getElementById('search-results-section').classList.remove('hidden');
+      
+      document.getElementById('search-name').textContent = capitalize(query);
+      document.getElementById('search-count').textContent = results.length === 0 
+        ? 'No letters found.'
+        : `Found ${results.length} letter${results.length > 1 ? 's' : ''}`;
+
+      const container = document.getElementById('letters-container');
+      
+      if (results.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-20 bg-gray-900/30 rounded-2xl border border-gray-700">
+            <div class="text-6xl mb-6">📭</div>
+            <h3 class="text-xl font-semibold text-white mb-4">No letters for ${capitalize(query)} yet</h3>
+            <button onclick="openWriteModalFor('${capitalize(query)}')" class="bg-amber-600 px-8 py-3 rounded-full text-white font-semibold">
+              Write one now
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = results.map(l => createLetterCard(l)).join('');
+      }
+    }
+
+    function createLetterCard(letter) {
+      const date = new Date(letter.timestamp).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+      
+      return `
+        <article class="bg-gray-900/50 border border-gray-700 rounded-lg overflow-hidden cursor-pointer hover:border-amber-500 transition-all" onclick="viewLetter(${letter.id})">
+          <div class="h-2 bg-amber-700"></div>
+          <div class="p-8">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <p class="text-xs text-amber-400 uppercase tracking-widest">To</p>
+                <h3 class="text-2xl font-display text-white">${letter.recipient}</h3>
+              </div>
+              <time class="text-gray-500 text-sm">${date}</time>
+            </div>
+            
+            <p class="font-bangla text-xl text-gray-300 leading-relaxed mb-6 line-clamp-3">${letter.content}</p>
+            
+            ${letter.spotifyUrl ? `
+              <div class="flex items-center gap-3 mb-6 text-green-400">
+                 <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0z"/></svg>
+                 <span class="text-sm font-medium">Contains a song</span>
+              </div>
+            ` : ''}
+
+            <div class="flex justify-between items-center pt-4 border-t border-gray-700">
+               <span class="text-gray-400 text-sm">From: ${letter.sender}</span>
+               <span class="text-gray-500">Read more &rarr;</span>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function viewLetter(id) {
+      const letter = letters.find(l => l.id === id);
+      if (!letter) return;
+
+      const date = new Date(letter.timestamp).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+      
+      // Spotify Embed Logic
+      let spotifyEmbed = '';
+      if (letter.spotifyUrl) {
+        const match = letter.spotifyUrl.match(/track\/([a-zA-Z0-9]+)/);
+        if (match && match[1]) {
+          spotifyEmbed = `
+            <div class="my-8">
+              <p class="text-xs uppercase tracking-widest text-amber-800 mb-3">Attached Song</p>
+              <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/${match[1]}?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+          `;
+        }
+      }
+
+      const content = `
+        <div class="p-8 md:p-12">
+          <button onclick="closeReadModal()" class="absolute top-4 right-4 text-amber-800/50 hover:text-amber-800 transition-colors z-10" aria-label="Close">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+
+          <div class="text-right mb-8 text-sm text-amber-800 font-display">
+            ${date}
+          </div>
+
+          <div class="mb-8">
+            <p class="text-xs uppercase tracking-widest text-amber-800 mb-1">Dear</p>
+            <h2 class="font-display text-4xl text-[var(--ink)]">${letter.recipient},</h2>
+          </div>
+
+          <div class="lined-paper font-bangla text-2xl text-[var(--ink)] leading-normal whitespace-pre-line mb-8">
+            ${letter.content}
+          </div>
+
+          ${spotifyEmbed}
+
+          <div class="mt-12 pt-8 border-t border-double border-amber-800/20 flex justify-between items-center">
+             <div>
+                <p class="text-sm text-amber-800">With love,</p>
+                <p class="font-display text-2xl text-[var(--ink)]">${letter.sender}</p>
+             </div>
+             
+             <div class="flex gap-3">
+                <button onclick="addFlower(${letter.id}, 'rose')" class="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform text-lg shadow border border-gray-200" title="Add Rose">🌹</button>
+                <button onclick="addFlower(${letter.id}, 'tulip')" class="w-10 h-10 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform text-lg shadow border border-gray-200" title="Add Tulip">🌷</button>
+             </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('letter-content').innerHTML = content;
+      document.getElementById('read-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function addFlower(id, type) {
+      const letter = letters.find(l => l.id === id);
+      if(!letter) return;
+      if(!letter.flowers) letter.flowers = [];
+      letter.flowers.push(type);
+      saveData();
+      viewLetter(id);
+      showToast('Flower added!');
+    }
+
+    // --- UTILS & UI CONTROLLERS ---
+
+    function openWriteModal() {
+      document.getElementById('write-modal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('recipient').focus();
+    }
+
+    function openWriteModalFor(name) {
+      openWriteModal();
+      document.getElementById('recipient').value = name;
+    }
+
+    function closeWriteModal() {
+      document.getElementById('write-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      document.getElementById('sender').value = '';
+      document.getElementById('recipient').value = '';
+      document.getElementById('content').value = '';
+      document.getElementById('spotify-link').value = '';
+    }
+
+    function closeReadModal() {
+      document.getElementById('read-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function showHome() {
+      document.getElementById('home-section').classList.remove('hidden');
+      document.getElementById('search-results-section').classList.add('hidden');
+      document.getElementById('search-input').value = '';
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0', 'translate-y-4');
+      toast.classList.add('opacity-100', 'translate-y-0');
+      
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-4');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 3000);
+    }
+
+    // Initialize
+    loadData();
+
+  </script>
+</body>
+</html>
